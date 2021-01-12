@@ -874,7 +874,11 @@ NSString *const OWSContactsManagerKeyNextFullIntersectionDate = @"OWSContactsMan
         } else {
             nameComponents.givenName = signalAccount.contactFullName;
         }
-    } else {
+    } else if (signalAccount.organizationName){
+        nameComponents.organizationName = signalAccount.organizationName;
+    }
+                                                                         
+    else {
         return nil;
     }
 
@@ -1319,7 +1323,10 @@ NSString *const OWSContactsManagerKeyNextFullIntersectionDate = @"OWSContactsMan
         NSString *rightName = self.shouldSortByGivenName ? nameComponents.familyName : nameComponents.givenName;
         return [NSString stringWithFormat:@"%@\t%@", leftName, rightName];
     }
-
+    else if (nameComponents != nil && nameComponents.givenName.length == 0 && nameComponents.familyName.length == 0 && nameComponents.organizationName > 0){
+        NSString *leftName = nameComponents.organizationName;
+        return [NSString stringWithFormat:@"%@", leftName];
+    } 
     // Fall back to non-contact display name.
     return [self displayNameForAddress:address transaction:transaction];
 }
